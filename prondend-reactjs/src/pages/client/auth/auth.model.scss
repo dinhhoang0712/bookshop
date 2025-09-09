@@ -1,0 +1,32 @@
+.wrapper {
+    background-color: #f4f2f2;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    background-color: white;
+    width: 500px;
+    height: 650px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+    padding: 20px;
+
+    & h1 {
+        padding: 20px;
+    }
+
+    & .form-container {
+        padding: 5px 20px;
+    }
+
+    & .social-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
+}

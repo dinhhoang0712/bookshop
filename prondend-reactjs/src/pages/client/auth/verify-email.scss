@@ -1,0 +1,272 @@
+// Variables
+$primary-color: #1890ff;
+$success-color: #52c41a;
+$error-color: #ff4d4f;
+$warning-color: #faad14;
+$text-color: #262626;
+$text-color-secondary: #8c8c8c;
+$background-color: #f0f2f5;
+$card-background: #ffffff;
+$border-radius: 8px;
+$border-radius-lg: 16px;
+$box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+$transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+// Mixins
+@mixin flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@mixin gradient-background {
+    background: linear-gradient(135deg, #e6f7ff 0%, #bae7ff 100%);
+}
+
+// Main container
+.verify-email {
+    min-height: 100vh;
+    @include gradient-background;
+    @include flex-center;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+    &__container {
+        width: 100%;
+        max-width: 480px;
+        margin: 0 auto;
+    }
+
+    &__card {
+        border-radius: $border-radius-lg;
+        box-shadow: $box-shadow;
+        border: none;
+        overflow: hidden;
+
+        .ant-card-body {
+            padding: 32px;
+
+            @media (max-width: 576px) {
+                padding: 24px;
+            }
+        }
+    }
+
+    &__header {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+    &__icon-wrapper {
+        @include flex-center;
+        width: 64px;
+        height: 64px;
+        background-color: #e6f7ff;
+        border-radius: 50%;
+        margin: 0 auto 16px;
+        transition: $transition;
+
+        &:hover {
+            transform: scale(1.05);
+        }
+    }
+
+    &__mail-icon {
+        font-size: 32px;
+        color: $primary-color;
+    }
+
+    &__main-title {
+        margin-bottom: 0 !important;
+        color: $text-color;
+        font-weight: 700;
+
+        &.ant-typography {
+            margin-bottom: 0;
+        }
+    }
+
+    &__content {
+        margin-bottom: 24px;
+    }
+
+
+    &__title {
+        color: $text-color !important;
+        margin-bottom: 16px !important;
+        font-weight: 600;
+    }
+
+    &__description {
+        color: $text-color-secondary !important;
+        font-size: 16px;
+        margin-bottom: 0 !important;
+    }
+
+    // Success state
+    &__success-icon {
+        color: $success-color !important;
+        font-size: 64px !important;
+    }
+
+    // Error state  
+    &__error-icon {
+        color: $error-color !important;
+        font-size: 64px !important;
+    }
+
+    // Result component customization
+    .ant-result {
+        padding: 24px 0;
+
+        &-title {
+            color: $text-color;
+            font-weight: 600;
+            font-size: 24px;
+        }
+
+        &-subtitle {
+            color: $text-color-secondary;
+            font-size: 16px;
+            margin-bottom: 24px;
+        }
+
+        &-extra {
+            margin-top: 24px;
+
+            .ant-btn {
+                margin: 0 8px 8px 0;
+
+                &:last-child {
+                    margin-right: 0;
+                }
+            }
+        }
+    }
+
+    // Button styling
+    &__button {
+        min-width: 140px;
+        height: 40px;
+        border-radius: $border-radius;
+        font-weight: 500;
+        transition: $transition;
+
+        &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        &:active {
+            transform: translateY(0);
+        }
+
+        // Responsive button layout
+        @media (max-width: 576px) {
+            display: block;
+            width: 100%;
+            margin: 0 0 12px 0 !important;
+
+            &:last-child {
+                margin-bottom: 0 !important;
+            }
+        }
+    }
+
+    // Footer
+    &__footer {
+        padding-top: 24px;
+        border-top: 1px solid #f0f0f0;
+        text-align: center;
+    }
+
+    &__support-text {
+        margin-bottom: 0 !important;
+        color: $text-color-secondary;
+        font-size: 14px;
+    }
+
+    &__support-link {
+        color: $primary-color;
+        font-weight: 500;
+        text-decoration: none;
+        transition: $transition;
+
+        &:hover {
+            color: #40a9ff;
+            text-decoration: underline;
+        }
+    }
+}
+
+// Ant Design component overrides
+.ant-result-error .ant-result-icon>.anticon {
+    color: $error-color;
+}
+
+.ant-result-success .ant-result-icon>.anticon {
+    color: $success-color;
+}
+
+// Animation keyframes
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// Apply animation to card
+.verify-email__card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+// Loading spinner animation enhancement
+.ant-spin-dot {
+    animation-duration: 1.2s;
+}
+
+// Responsive design
+@media (max-width: 768px) {
+    .verify-email {
+        padding: 16px;
+
+        &__card .ant-card-body {
+            padding: 24px 20px;
+        }
+
+        &__main-title {
+            font-size: 24px;
+        }
+
+        .ant-result-title {
+            font-size: 20px;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .verify-email {
+        &__icon-wrapper {
+            width: 56px;
+            height: 56px;
+        }
+
+        &__mail-icon {
+            font-size: 28px;
+        }
+
+        &__main-title {
+            font-size: 22px;
+        }
+
+        .ant-result-title {
+            font-size: 18px;
+        }
+    }
+}

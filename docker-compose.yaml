@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend-springboot
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "8080:8080"
+    environment:
+      - UPLOAD_FILE_BASE_URI=file:/app/upload/image/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/bookshop?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=hoang0712
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    volumes:
+      - ./upload/image:/app/upload/image
+    depends_on:
+      - mysql
+    networks:
+      - webnet
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: bookshop
+      MYSQL_USER: root
+      MYSQL_PASSWORD: hoang0712
+      MYSQL_ROOT_PASSWORD: hoang0712
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    networks:
+      - webnet
+
+  frontend:
+    build:
+      context: ./prondend-reactjs
+      dockerfile: Dockerfile
+    container_name: frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+    networks:
+      - webnet
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    depends_on:
+      - backend
+      - frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./upload/image:/app/upload/image:ro
+    networks:
+      - webnet
+
+volumes:
+  mysql_data:
+
+networks:
+  webnet:
+    driver: bridge

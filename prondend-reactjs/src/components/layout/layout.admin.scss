@@ -1,0 +1,98 @@
+.admin-layout {
+    min-height: 100vh;
+    background: #f5f6fa;
+
+    &__sider {
+        background: #fff;
+        box-shadow: 2px 0 8px #f0f1f2;
+
+        .admin-layout__logo {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+            color: #1890ff;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #f0f1f2;
+        }
+
+        .admin-layout__menu {
+            border-inline-end: none;
+
+            .ant-menu-item {
+                margin: 0;
+                border-radius: 4px;
+                margin-bottom: 4px;
+                font-size: 16px;
+
+                &:hover,
+                &.ant-menu-item-selected {
+                    background: #e6f7ff;
+                    color: #1890ff;
+                }
+
+                .anticon {
+                    font-size: 18px;
+                }
+            }
+        }
+    }
+
+    &__header {
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        min-height: 64px;
+        box-shadow: 0 2px 8px #f0f1f2;
+
+        .admin-layout__toggle {
+            font-size: 22px;
+            color: #1890ff;
+            cursor: pointer;
+            margin-right: 16px;
+        }
+
+        .admin-layout__header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            .admin-layout__header-user {
+                color: #1890ff;
+                font-weight: 500;
+            }
+        }
+    }
+
+    &__content {
+        padding: 32px;
+        background: linear-gradient(180deg, #f5f6fa 0%, #e3e3e3 100%);
+        min-height: calc(100vh - 64px);
+    }
+}
+
+@media (max-width: 900px) {
+    .admin-layout__sider {
+        width: 60px !important;
+
+        .admin-layout__logo {
+            font-size: 16px;
+        }
+
+        .ant-menu-item {
+            font-size: 14px;
+        }
+    }
+
+    .admin-layout__header {
+        padding: 0 8px;
+    }
+
+    .admin-layout__content {
+        padding: 12px;
+    }
+}
