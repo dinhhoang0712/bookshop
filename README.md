@@ -1,476 +1,307 @@
-# Ứng Dụng Thương Mại Điện Tử Laptop Shop
+# Web Book - Ứng dụng Cửa hàng Sách Thương mại Điện tử
 
-Một ứng dụng web thương mại điện tử đầy đủ tính năng được xây dựng với Spring Boot để bán laptop và các thiết bị điện tử.
+Ứng dụng cửa hàng sách thương mại điện tử full-stack được xây dựng với backend Spring Boot và frontend React, có tính năng xác thực người dùng, quản lý sách, xử lý đơn hàng và tích hợp thanh toán.
 
-## 📋 Mục Lục
+## 🏗️ Kiến trúc
 
-- [Tổng quan](#tổng-quan)
-- [Tính năng](#tính-năng)
-- [Công nghệ sử dụng](#công-nghệ-sử-dụng)
-- [Cấu trúc dự án](#cấu-trúc-dự-án)
-- [Cơ sở dữ liệu](#cơ-sở-dữ-liệu)
-- [Yêu cầu hệ thống](#yêu-cầu-hệ-thống)
-- [Cài đặt](#cài-đặt)
-- [Cấu hình](#cấu-hình)
-- [Chạy ứng dụng](#chạy-ứng-dụng)
-- [Triển khai Docker](#triển-khai-docker)
-- [API Endpoints](#api-endpoints)
-- [Người dùng mặc định](#người-dùng-mặc-định)
-- [Bảo mật](#bảo-mật)
-- [Đóng góp](#đóng-góp)
-- [Giấy phép](#giấy-phép)
+### Backend (Spring Boot)
+- **Framework**: Spring Boot 3.4.5
+- **Ngôn ngữ**: Java 21
+- **Cơ sở dữ liệu**: MySQL 8.0
+- **Cache**: Redis
+- **Xác thực**: JWT + OAuth2 (Google)
+- **Thanh toán**: Tích hợp VNPay
+- **Email**: SendGrid
+- **AI**: Spring AI với OpenAI
 
-## 🎯 Tổng quan
+### Frontend (React)
+- **Framework**: React 19 với TypeScript
+- **Công cụ xây dựng**: Vite
+- **Thư viện UI**: Ant Design 5.25.1
+- **Định tuyến**: React Router 7.6.0
+- **HTTP Client**: Axios 1.9.0
+- **Quản lý trạng thái**: React Context API
+- **OAuth**: @react-oauth/google
 
-Laptop Shop là một nền tảng thương mại điện tử toàn diện được xây dựng với Spring Boot 3.4.3 và Java 21. Nó cung cấp trải nghiệm mua sắm hoàn chỉnh cho khách hàng và một bảng quản trị mạnh mẽ để quản lý cửa hàng. Ứng dụng theo kiến trúc MVC truyền thống với giao diện JSP và bao gồm các tính năng như quản lý sản phẩm, giỏ hàng, xử lý đơn hàng và xác thực người dùng.
+## 📋 Tính năng
 
-## ✨ Tính năng
+### Tính năng Người dùng
+- **Xác thực**: Đăng ký/Đăng nhập với email và mật khẩu
+- **Đăng nhập xã hội**: Tích hợp Google OAuth2
+- **Xác thực Email**: Xác thực email qua SendGrid
+- **Đặt lại mật khẩu**: Chức năng đặt lại mật khẩu an toàn
+- **Quản lý hồ sơ**: Cập nhật thông tin người dùng và avatar
+- **Duyệt sách**: Xem sách với chi tiết, hình ảnh và danh mục
+- **Giỏ hàng**: Thêm sách vào giỏ và quản lý số lượng
+- **Đặt hàng**: Đặt hàng với tích hợp thanh toán VNPay
+- **Lịch sử đơn hàng**: Xem các đơn hàng trước đó và chi tiết
 
-### Tính năng cho khách hàng
-- **Xác thực người dùng**: Đăng ký và đăng nhập với email/mật khẩu
-- **Duyệt sản phẩm**: Xem tất cả sản phẩm với phân trang và bộ lọc
-- **Tìm kiếm sản phẩm**: Lọc sản phẩm theo nhà sản xuất, đối tượng mục tiêu và phạm vi giá
-- **Chi tiết sản phẩm**: Xem chi tiết từng sản phẩm
-- **Giỏ hàng**: Thêm, cập nhật và xóa mục trong giỏ hàng
-- **Đặt hàng**: Quy trình thanh toán hoàn chỉnh với thông tin giao hàng
-- **Lịch sử đơn hàng**: Xem các đơn hàng trước đó và trạng thái của chúng
-- **Hồ sơ người dùng**: Quản lý thông tin cá nhân và avatar
+### Tính năng Admin
+- **Dashboard**: Tổng quan thống kê hệ thống
+- **Quản lý người dùng**: Tạo, cập nhật và quản lý người dùng
+- **Quản lý sách**: Thao tác CRUD đầy đủ cho sách
+  - Tải lên ảnh bìa và thư viện ảnh sách
+  - Quản lý chi tiết sách (tác giả, giá, số lượng, danh mục)
+  - Nhập/xuất dữ liệu người dùng qua Excel
+- **Quản lý đơn hàng**: Xem và quản lý tất cả đơn hàng
 
-### Tính năng cho quản trị viên
-- **Dashboard**: Tổng quan thống kê cửa hàng
-- **Quản lý sản phẩm**: Tạo, đọc, cập nhật và xóa sản phẩm
-- **Quản lý người dùng**: Quản lý tài khoản người dùng và vai trò
-- **Quản lý đơn hàng**: Xem, cập nhật trạng thái và quản lý đơn hàng
-- **Tải lên hình ảnh**: Tải lên hình ảnh sản phẩm và avatar người dùng
+## 🗄️ Cơ sở dữ liệu
 
-### Tính năng kỹ thuật
-- **Kiểm soát truy cập dựa trên vai trò**: Giao diện riêng biệt cho quản trị viên và người dùng thường
-- **Quản lý phiên làm việc**: Lưu trữ phiên dựa trên JDBC với thời gian chờ 30 phút
-- **Tải lên tệp**: Hỗ trợ tải lên hình ảnh (tối đa 50MB)
-- **Xác thực dữ liệu**: Xác thực biểu mẫu với các trình xác thực tùy chỉnh
-- **Bảo mật mật khẩu**: Mã hóa BCrypt với yêu cầu mật khẩu mạnh
-- **Thiết kế phản hồi**: Giao diện thân thiện với thiết bị di động
+### Bảng
+- **users**: Tài khoản người dùng với thông tin xác thực và hồ sơ
+- **books**: Danh mục sách với hình ảnh, giá và tồn kho
+- **orders**: Đơn hàng khách hàng với chi tiết thanh toán và vận chuyển
+- **order_details**: Các mục riêng lẻ trong đơn hàng
 
-## 🛠 Công nghệ sử dụng
+### Dữ liệu mẫu
+Được điền sẵn với sách mẫu qua nhiều danh mục (Tâm lý, Truyện tranh, Kinh doanh, Âm nhạc, Sức khỏe, Nấu ăn, Lịch sử, Du lịch, Thể thao, Nghệ thuật, Tuổi mới lớn) và người dùng thử.
 
-### Backend
-- **Java 21**: Ngôn ngữ lập trình
-- **Spring Boot 3.4.3**: Framework ứng dụng
-- **Spring Data JPA**: ORM cơ sở dữ liệu với Hibernate
-- **Spring Security**: Xác thực và ủy quyền
-- **Spring Session JDBC**: Quản lý phiên làm việc
-- **Spring Validation**: Xác thực biểu mẫu
-- **MySQL 8.0**: Cơ sở dữ liệu
-- **Maven**: Công cụ xây dựng
+## 🚀 Bắt đầu
 
-### Frontend
-- **JSP (JavaServer Pages)**: Công nghệ giao diện
-- **JSTL (JSP Standard Tag Library)**: Thư viện thẻ cho JSP
-- **Bootstrap**: Framework CSS (được suy ra từ cấu trúc)
-- **Custom CSS/JS**: Tùy chỉnh kiểu và chức năng
+### Điều kiện tiên quyết
+- Docker và Docker Compose
+- Java 21 (cho phát triển local)
+- Node.js 20 (cho phát triển local)
+- MySQL 8.0
+- Redis
 
-### DevOps
-- **Docker**: Container hóa
-- **Docker Compose**: Điều phối đa container
+### Biến môi trường
+
+#### Backend (application.yaml)
+```yaml
+# Database
+DB_USERNAME: root
+DB_PASSWORD: your_password
+
+# Redis
+REDIS_HOST: localhost
+REDIS_PORT: 6379
+REDIS_TIMEOUT: 6000
+
+# JWT
+JWT_SECRET: your_jwt_secret_key
+JWT_ACCESS_TOKEN_VALIDITY: 86400
+JWT_REFRESH_TOKEN_VALIDITY: 2592000
+
+# SendGrid
+SENDGRID_API_KEY: your_sendgrid_api_key
+SENDGRID_FROM_EMAIL: your_email@example.com
+SENDGRID_TEMPLATE_ID: your_template_id
+SENDGRID_VERIFY_URL: http://localhost:3000/verify-email
+
+# Google OAuth
+GOOGLE_CLIENT_ID: your_google_client_id
+GOOGLE_CLIENT_SECRET: your_google_client_secret
+GOOGLE_REDIRECT_URI: http://localhost:3000/auth/google/callback
+
+# OpenAI
+OPENAI_API_KEY: your_openai_api_key
+
+# File Upload
+UPLOAD_FILE_BASE_URI: file:///path/to/upload/image/
+
+# Server
+SERVER_PORT: 8080
+```
+
+#### Frontend (.env)
+```
+VITE_API_URL=http://localhost:8080
+```
+
+### Bắt đầu nhanh với Docker
+
+1. Clone repository
+```bash
+git clone <repository-url>
+cd web-book
+```
+
+2. Tạo thư mục upload
+```bash
+mkdir -p upload/image
+```
+
+3. Khởi động tất cả dịch vụ
+```bash
+docker-compose up -d
+```
+
+4. Truy cập ứng dụng
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8080
+- Admin Panel: http://localhost:3000/admin
+- Nginx (Reverse Proxy): http://localhost:80
+
+### Phát triển Local
+
+#### Backend
+```bash
+cd backend-springboot
+./mvnw spring-boot:run
+```
+
+#### Frontend
+```bash
+cd prondend-reactjs
+npm install
+npm run dev
+```
 
 ## 📁 Cấu trúc dự án
 
 ```
-laptopshop/
-├── src/
-│   ├── main/
-│   │   ├── java/vn/vuhoang/laptopshop/
-│   │   │   ├── config/              # Các lớp cấu hình
-│   │   │   │   ├── CustomSuccessHandler.java
-│   │   │   │   ├── SecurityConfiguration.java
-│   │   │   │   └── WebMvcConfig.java
-│   │   │   ├── controller/         # MVC Controllers
-│   │   │   │   ├── admin/          # Controllers quản trị
-│   │   │   │   │   ├── DashboardController.java
-│   │   │   │   │   ├── OrderController.java
-│   │   │   │   │   ├── ProductController.java
-│   │   │   │   │   └── UserController.java
-│   │   │   │   └── client/         # Controllers khách hàng
-│   │   │   │       ├── HomePageController.java
-│   │   │   │       └── ItemController.java
-│   │   │   ├── domain/             # Các lớp Entity
-│   │   │   │   ├── Cart.java
-│   │   │   │   ├── CartDetail.java
-│   │   │   │   ├── Order.java
-│   │   │   │   ├── OrderDetail.java
-│   │   │   │   ├── Product.java
-│   │   │   │   ├── Role.java
-│   │   │   │   ├── User.java
-│   │   │   │   └── dto/            # Data Transfer Objects
-│   │   │   ├── repository/         # JPA Repositories
-│   │   │   ├── service/            # Logic nghiệp vụ
-│   │   │   │   ├── validator/      # Trình xác thực tùy chỉnh
-│   │   │   │   └── specification/  # JPA Specifications
-│   │   │   └── LaptopshopApplication.java
-│   │   ├── resources/
-│   │   │   ├── application.properties
-│   │   │   └── data.sql            # Dữ liệu ban đầu
-│   │   └── webapp/
-│   │       ├── WEB-INF/
-│   │       │   └── view/           # JSP views
-│   │       │       ├── admin/      # Views quản trị
-│   │       │       └── client/     # Views khách hàng
-│   │       └── resources/          # Tài nguyên tĩnh
-│   │           ├── css/
-│   │           ├── js/
-│   │           ├── images/
-│   │           └── client/
-│   └── test/
-├── Dockerfile
-├── docker-compose.yml
-├── pom.xml
-└── README.md
+web-book/
+├── backend-springboot/          # Spring Boot backend
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/
+│   │   │   │   └── vn/vuhoang/backend_springboot/
+│   │   │   │       ├── config/          # Cấu hình Security, JWT, OAuth2
+│   │   │   │       ├── controller/     # REST controllers
+│   │   │   │       ├── domain/
+│   │   │   │       │   ├── entity/     # JPA entities
+│   │   │   │       │   └── dto/        # Data transfer objects
+│   │   │   │       ├── exception/      # Custom exceptions
+│   │   │   │       ├── mapper/         # MapStruct mappers
+│   │   │   │       ├── repository/     # JPA repositories
+│   │   │   │       └── service/        # Business logic
+│   │   │   └── resources/
+│   │   │       └── application.yaml    # Cấu hình ứng dụng
+│   │   └── test/
+│   └── pom.xml                        # Maven dependencies
+│
+├── prondend-reactjs/               # React frontend
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── admin/               # Admin components
+│   │   │   ├── client/              # Client components
+│   │   │   ├── context/             # React context
+│   │   │   └── layout/              # Layout components
+│   │   ├── pages/
+│   │   │   ├── admin/               # Admin pages
+│   │   │   └── client/              # Client pages
+│   │   ├── services/                # API services
+│   │   ├── types/                   # TypeScript types
+│   │   ├── main.tsx                 # App entry point
+│   │   └── layout.tsx               # Root layout
+│   ├── public/                      # Static assets
+│   ├── package.json                 # NPM dependencies
+│   └── vite.config.ts               # Vite configuration
+│
+├── upload/                          # File uploads
+│   └── image/                       # Book images
+│
+├── mysql-init.sql                   # Database initialization
+├── docker-compose.yaml              # Docker orchestration
+└── README.md                        # File này
 ```
 
-## 🗄 Cơ sở dữ liệu
-
-### Các bảng
-
-**users** (Người dùng)
-- `id` (Long, Khóa chính, Tự tăng)
-- `email` (String, Duy nhất, Bắt buộc)
-- `password` (String, Bắt buộc, Tối thiểu 2 ký tự)
-- `full_name` (String, Bắt buộc, Tối thiểu 3 ký tự)
-- `address` (String)
-- `phone` (String)
-- `avatar` (String)
-- `role_id` (Long, Khóa ngoại đến roles)
-
-**roles** (Vai trò)
-- `id` (Long, Khóa chính, Tự tăng)
-- `name` (String, Bắt buộc)
-- `description` (String)
-
-**products** (Sản phẩm)
-- `id` (Long, Khóa chính, Tự tăng)
-- `name` (String, Bắt buộc)
-- `price` (Double, Bắt buộc, > 0)
-- `image` (String, Bắt buộc)
-- `detail_desc` (String, Bắt buộc, MEDIUMTEXT)
-- `short_desc` (String, Bắt buộc)
-- `quantity` (Long)
-- `sold` (Long)
-- `factory` (String)
-- `target` (String)
-
-**carts** (Giỏ hàng)
-- `id` (Long, Khóa chính, Tự tăng)
-- `user_id` (Long, Khóa ngoại đến users)
-- `sum` (Integer)
-
-**cart_details** (Chi tiết giỏ hàng)
-- `id` (Long, Khóa chính, Tự tăng)
-- `cart_id` (Long, Khóa ngoại đến carts)
-- `product_id` (Long, Khóa ngoại đến products)
-- `quantity` (Integer)
-- `price` (Double)
-
-**orders** (Đơn hàng)
-- `id` (Long, Khóa chính, Tự tăng)
-- `user_id` (Long, Khóa ngoại đến users)
-- `total_price` (Double)
-- `receiver_name` (String)
-- `receiver_address` (String)
-- `receiver_phone` (String)
-- `status` (String)
-
-**order_details** (Chi tiết đơn hàng)
-- `id` (Long, Khóa chính, Tự tăng)
-- `order_id` (Long, Khóa ngoại đến orders)
-- `product_id` (Long, Khóa ngoại đến products)
-- `quantity` (Long)
-- `price` (Double)
-
-## 📦 Yêu cầu hệ thống
-
-Trước khi chạy ứng dụng này, hãy đảm bảo bạn đã cài đặt các phần sau:
-
-- **Java 21** hoặc cao hơn
-- **Maven 3.6+** hoặc cao hơn
-- **MySQL 8.0** hoặc cao hơn (nếu không sử dụng Docker)
-- **Docker & Docker Compose** (để triển khai container)
-
-## 🔧 Cài đặt
-
-### 1. Clone Repository
-
-```bash
-git clone <repository-url>
-cd laptopshop
-```
-
-### 2. Cấu hình Cơ sở dữ liệu
-
-#### Tùy chọn A: Sử dụng MySQL trực tiếp
-
-Tạo cơ sở dữ liệu MySQL:
-
-```sql
-CREATE DATABASE laptopshop;
-```
-
-Cập nhật `src/main/resources/application.properties` với thông tin đăng nhập cơ sở dữ liệu của bạn:
-
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/laptopshop
-spring.datasource.username=your_username
-spring.datasource.password=your_password
-```
-
-#### Tùy chọn B: Sử dụng Docker Compose (Khuyên dùng)
-
-Ứng dụng bao gồm tệp `docker-compose.yml` để thiết lập dễ dàng. Xem phần [Triển khai Docker](#triển-khai-docker).
-
-### 3. Xây dựng dự án
-
-```bash
-./mvnw clean install
-```
-
-Hoặc sử dụng Maven trực tiếp:
-
-```bash
-mvn clean install
-```
-
-## ⚙️ Cấu hình
-
-### Thuộc tính ứng dụng
-
-Các tùy chọn cấu hình chính trong `src/main/resources/application.properties`:
-
-```properties
-# Cấu hình cơ sở dữ liệu
-spring.datasource.url=jdbc:mysql://${MYSQL_HOST:localhost}:3306/laptopshop
-spring.datasource.username=root
-spring.datasource.password=hoang0712
-
-# Cấu hình JPA
-spring.jpa.hibernate.ddl-auto=update
-spring.sql.init.mode=always
-
-# Tải lên tệp
-spring.servlet.multipart.max-file-size=50MB
-spring.servlet.multipart.max-request-size=50MB
-
-# Quản lý phiên làm việc
-spring.session.store-type=jdbc
-spring.session.timeout=30m
-spring.session.jdbc.initialize-schema=always
-
-# Cấu hình Cookie (cho Docker)
-server.servlet.session.cookie.name=MY_SESSION
-server.servlet.session.cookie.domain=localhost
-server.servlet.session.cookie.secure=false
-server.servlet.session.cookie.same-site=lax
-
-# Ghi log
-logging.level.org.springframework.security=DEBUG
-logging.level.org.springframework.web=DEBUG
-logging.level.org.springframework.session=DEBUG
-```
-
-### Biến môi trường
-
-Khi sử dụng Docker, bạn có thể ghi đè cấu hình bằng các biến môi trường:
-
-- `MYSQL_HOST`: Địa chỉ host MySQL
-- `SPRING_DATASOURCE_URL`: URL JDBC đầy đủ
-- `SPRING_DATASOURCE_USERNAME`: Tên đăng nhập cơ sở dữ liệu
-- `SPRING_DATASOURCE_PASSWORD`: Mật khẩu cơ sở dữ liệu
-- `SPRING_SESSION_JDBC_INITIALIZE_SCHEMA`: Khởi tạo schema phiên làm việc
-- `SPRING_SESSION_TIMEOUT`: Thời gian chờ phiên làm việc
-
-## 🚀 Chạy ứng dụng
-
-### Phát triển cục bộ
-
-1. Khởi động cơ sở dữ liệu MySQL (nếu không sử dụng Docker)
-2. Chạy ứng dụng:
-
-```bash
-./mvnw spring-boot:run
-```
-
-Hoặc sử dụng Maven:
-
-```bash
-mvn spring-boot:run
-```
-
-3. Truy cập ứng dụng tại `http://localhost:8080`
-
-### Sử dụng tệp JAR
-
-1. Xây dựng tệp JAR:
-
-```bash
-./mvnw clean package
-```
-
-2. Chạy tệp JAR:
-
-```bash
-java -jar target/laptopshop-0.0.1-SNAPSHOT.jar
-```
-
-## 🐳 Triển khai Docker
-
-### Sử dụng Docker Compose (Khuyên dùng)
-
-1. Xây dựng và khởi động tất cả dịch vụ:
-
-```bash
-docker-compose up --build
-```
-
-2. Truy cập ứng dụng tại `http://localhost:8080`
-
-3. Để dừng dịch vụ:
-
-```bash
-docker-compose down
-```
-
-### Sử dụng Docker thủ công
-
-1. Xây dựng Docker image:
-
-```bash
-docker build -t laptopshop .
-```
-
-2. Chạy container:
-
-```bash
-docker run -p 8080:8080 \
-  -e MYSQL_HOST=mysql \
-  -e SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/laptopshop \
-  -e SPRING_DATASOURCE_USERNAME=root \
-  -e SPRING_DATASOURCE_PASSWORD=hoang0712 \
-  laptopshop
-```
-
-## 🌐 API Endpoints
-
-### Endpoints công khai
-
-| Phương thức | Endpoint | Mô tả |
-|--------|----------|-------------|
-| GET | `/` | Trang chủ |
-| GET | `/login` | Trang đăng nhập |
-| GET | `/register` | Trang đăng ký |
-| POST | `/register` | Đăng ký người dùng mới |
-| GET | `/product/{id}` | Trang chi tiết sản phẩm |
-| GET | `/products` | Danh sách sản phẩm với bộ lọc |
-| GET | `/deny` | Trang truy cập bị từ chối |
-
-### Endpoints khách hàng (Cần xác thực)
-
-| Phương thức | Endpoint | Mô tả |
-|--------|----------|-------------|
-| GET | `/cart` | Trang giỏ hàng |
-| POST | `/add-product-to-cart/{id}` | Thêm sản phẩm vào giỏ hàng |
-| POST | `/add-product-form-view-detail` | Thêm sản phẩm từ trang chi tiết |
-| POST | `/delete-cart-product/{id}` | Xóa mục khỏi giỏ hàng |
-| POST | `/confirm-checkout` | Xác nhận thanh toán |
-| POST | `/place-order` | Đặt hàng |
-| GET | `/checkout` | Trang thanh toán |
-| GET | `/thanks` | Trang xác nhận đơn hàng |
-| GET | `/order-history` | Xem lịch sử đơn hàng |
-
-### Endpoints quản trị viên (Yêu cầu vai trò ADMIN)
-
-| Phương thức | Endpoint | Mô tả |
-|--------|----------|-------------|
-| GET | `/admin` | Dashboard quản trị |
-| GET | `/admin/product` | Danh sách sản phẩm |
-| GET | `/admin/product/create` | Form tạo sản phẩm |
-| POST | `/admin/product/create` | Tạo sản phẩm |
-| GET | `/admin/product/update/{id}` | Form cập nhật sản phẩm |
-| POST | `/admin/product/update` | Cập nhật sản phẩm |
-| GET | `/admin/product/delete/{id}` | Xác nhận xóa sản phẩm |
-| POST | `/admin/product/delete` | Xóa sản phẩm |
-| GET | `/admin/product/view/{id}` | Xem chi tiết sản phẩm |
-| GET | `/admin/user` | Danh sách người dùng |
-| GET | `/admin/user/create` | Form tạo người dùng |
-| POST | `/admin/user/create` | Tạo người dùng |
-| GET | `/admin/user/update/{id}` | Form cập nhật người dùng |
-| POST | `/admin/user/update` | Cập nhật người dùng |
-| GET | `/admin/user/delete/{id}` | Xác nhận xóa người dùng |
-| POST | `/admin/user/delete` | Xóa người dùng |
-| GET | `/admin/user/view/{id}` | Xem chi tiết người dùng |
-| GET | `/admin/order` | Danh sách đơn hàng |
-| GET | `/admin/order/view/{id}` | Xem chi tiết đơn hàng |
-| GET | `/admin/order/update/{id}` | Form cập nhật đơn hàng |
-| POST | `/admin/order/update` | Cập nhật trạng thái đơn hàng |
-| GET | `/admin/order/delete/{id}` | Xác nhận xóa đơn hàng |
-| POST | `/admin/order/delete` | Xóa đơn hàng |
-
-## 👥 Người dùng mặc định
-
-Ứng dụng đi kèm với người dùng được cấu hình sẵn (từ `data.sql`):
-
-### Người dùng quản trị
-- **Email**: `vuhoang5053@gmail.com`
-- **Mật khẩu**: (đã mã hóa trong cơ sở dữ liệu)
-- **Vai trò**: ADMIN
-- **Họ tên**: Vũ Đình Hoàng
-
-### Người dùng thường
-- **Email**: `23001881@hus.edu.vn`
-- **Mật khẩu**: (đã mã hóa trong cơ sở dữ liệu)
-- **Vai trò**: USER
-- **Họ tên**: Hoàng Vũ
-
-- **Email**: `user@gmail.com`
-- **Mật khẩu**: (đã mã hóa trong cơ sở dữ liệu)
-- **Vai trò**: USER
-- **Họ tên**: Hoang Vu
-
-**Lưu ý**: Bạn nên thay đổi các mật khẩu mặc định này trong môi trường sản xuất hoặc tạo người dùng mới thông qua trang đăng ký.
-
-## 🔒 Bảo mật
-
-### Xác thực & Ủy quyền
-- **Spring Security** xử lý xác thực và ủy quyền
-- **BCrypt** mã hóa băm mật khẩu
+## 🔧 API Endpoints
+
+### Xác thực
+- `POST /api/v1/auth/login` - Đăng nhập người dùng
+- `POST /api/v1/auth/register` - Đăng ký người dùng
+- `POST /api/v1/auth/refresh` - Làm mới JWT token
+- `GET /api/v1/auth/google` - Đăng nhập Google OAuth2
+
+### Sách
+- `GET /api/v1/books` - Lấy tất cả sách (với phân trang)
+- `GET /api/v1/books/{id}` - Lấy sách theo ID
+- `POST /api/v1/books` - Tạo sách mới (Admin)
+- `PUT /api/v1/books/{id}` - Cập nhật sách (Admin)
+- `DELETE /api/v1/books/{id}` - Xóa sách (Admin)
+
+### Đơn hàng
+- `POST /api/v1/orders` - Tạo đơn hàng mới
+- `GET /api/v1/orders` - Lấy đơn hàng người dùng
+- `GET /api/v1/orders/{id}` - Lấy đơn hàng theo ID
+- `GET /api/v1/orders/admin` - Lấy tất cả đơn hàng (Admin)
+
+### Người dùng
+- `GET /api/v1/users` - Lấy tất cả người dùng (Admin)
+- `GET /api/v1/users/{id}` - Lấy người dùng theo ID
+- `PUT /api/v1/users/{id}` - Cập nhật người dùng
+- `DELETE /api/v1/users/{id}` - Xóa người dùng (Admin)
+
+### Files
+- `POST /api/v1/files/upload` - Tải lên file
+- `GET /static/{filename}` - Phục vụ file tĩnh
+
+### Thanh toán
+- `POST /api/v1/payment/create` - Tạo thanh toán VNPay
+- `GET /api/v1/payment/callback` - Callback thanh toán VNPay
+
+## 🔐 Bảo mật
+
+- **Xác thực JWT**: Xác thực dựa trên token không trạng thái
+- **OAuth2**: Tích hợp đăng nhập xã hội Google
+- **Mã hóa mật khẩu**: BCrypt hashing
 - **Kiểm soát truy cập dựa trên vai trò**: Vai trò ADMIN và USER
-- **Quản lý phiên làm việc** với backend JDBC
-- **Trình xử lý thành công đăng nhập tùy chỉnh** cho chuyển hướng dựa trên vai trò
+- **Cấu hình CORS**: Chia sẻ tài nguyên đa nguồn gốc
+- **Xác thực đầu vào**: Xác thực yêu cầu với Jakarta Validation
 
-### Yêu cầu mật khẩu
-- Tối thiểu 2 ký tự (yêu cầu cơ bản)
-- Xác thực mật khẩu mạnh có sẵn (trình xác thực tùy chỉnh)
+## 💳 Tích hợp Thanh toán
 
-### Cấu hình phiên làm việc
-- Thời gian chờ phiên: 30 phút
-- Số phiên tối đa cho mỗi người dùng: 1
-- Phiên làm việc được lưu trữ trong cơ sở dữ liệu (JDBC)
-- Chức năng nhớ tôi được bật
+Ứng dụng tích hợp với VNPay để xử lý thanh toán:
+- Tích hợp cổng thanh toán an toàn
+- Xử lý callback thanh toán
+- Cập nhật trạng thái đơn hàng dựa trên kết quả thanh toán
 
-### Bảo mật tải lên tệp
-- Kích thước tệp tối đa: 50MB
-- Xác thực tải lên tệp
-- Lưu trữ hình ảnh trong thư mục `resources/images/`
+## 📧 Dịch vụ Email
 
-## 👨‍💻 Tác giả
+Tích hợp SendGrid cho:
+- Xác thực email trong quá trình đăng ký
+- Chức năng đặt lại mật khẩu
+- Email giao dịch
+
+## 🤖 Tích hợp AI
+
+Spring AI với OpenAI cho:
+- Đề xuất sách thông minh
+- Tính năng tạo nội dung
+- Xử lý ngôn ngữ tự nhiên
+
+## 🛠️ Công nghệ
+
+### Backend
+- Spring Boot 3.4.5
+- Spring Security
+- Spring Data JPA
+- Spring Data Redis
+- Spring AI
+- MySQL Connector
+- SendGrid Java
+- MapStruct
+- Lombok
+- Google API Client
+
+### Frontend
+- React 19
+- TypeScript 5.8
+- Vite 6.3
+- Ant Design 5.25
+- Ant Design Pro Components 2.8
+- React Router 7.6
+- Axios 1.9
+- Day.js 1.11
+- ExcelJS 4.4
+- React Icons 5.5
+- React CSV 2.2
+- React CountUp 6.5
+- React Spinners 0.17
+- Sass 1.89
+
+### DevOps
+- Docker & Docker Compose
+- Nginx (Reverse Proxy)
+- MySQL 8.0
+- Redis
+
+
+
+## 👤 Tác giả
 
 **Vũ Đình Hoàng**
 - Email: vuhoang5053@gmail.com
 
-
-**Lưu ý**: Đây là một dự án trình diễn. Để sử dụng trong môi trường sản xuất, vui lòng đảm bảo:
-- Thay đổi mật khẩu mặc định
-- Cấu hình SSL/HTTPS phù hợp
-- Thiết lập chiến lược sao lưu phù hợp
-- Cấu hình cài đặt cơ sở dữ liệu cấp sản xuất
-- Triển khai ghi log và giám sát phù hợp
-- Thêm xử lý lỗi toàn diện
-- Thực hiện kiểm tra bảo mật
-- Thiết lập pipeline CI/CD
